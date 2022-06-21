@@ -15,7 +15,7 @@ typedef struct player
     
 }player;
 
-COORD Convertion (string in);
+pair<int, int> Convertion (string in);
 bool sameLocation(pair<int, char> pos);
 bool uselessLocation(pair <int, char> pos);
 
@@ -30,6 +30,21 @@ map <int, vector<char>> M={{1, {'B', 'C', 'E', 'F'}},
                             {7, {'B', 'C', 'E', 'F'}}};
 
 
+char board [][29]= {{"   1   2   3   4   5   6   7"},
+                    {"A  * - - - - - * - - - - - *"},
+                    {"   |           |           |"},
+                    {"B  |   * - - - * - - - *   |"},
+                    {"   |   |       |       |   |"},
+                    {"C  |   |   * - * - *   |   |"},
+                    {"   |   |   |       |   |   |"},
+                    {"D  * - * - *       * - * - *"},
+                    {"   |   |   |       |   |   |"},
+                    {"E  |   |   * - * - *   |   |"},
+                    {"   |   |       |       |   |"},
+                    {"F  |   * - - - * - - - *   |"},
+                    {"   |           |           |"},
+                    {"G  *-----------*-----------*"}
+    };
 
 player *PLAYER[2];
 
@@ -54,21 +69,6 @@ int main()
 
     //display board
 
-    char board [][29]= {{"   1   2   3   4   5   6   7"},
-                        {"A  * - - - - - * - - - - - *"},
-                        {"   |           |           |"},
-                        {"B  |   * - - - * - - - *   |"},
-                        {"   |   |       |       |   |"},
-                        {"C  |   |   * - * - *   |   |"},
-                        {"   |   |   |       |   |   |"},
-                        {"D  * - * - *       * - * - *"},
-                        {"   |   |   |       |   |   |"},
-                        {"E  |   |   * - * - *   |   |"},
-                        {"   |   |       |       |   |"},
-                        {"F  |   * - - - * - - - *   |"},
-                        {"   |           |           |"},
-                        {"G  *-----------*-----------*"}
-    };
 
 
     for(int i=0; i<14; i++)
@@ -103,7 +103,7 @@ int main()
             cin >> in;
         }
 
-        pos =  Convertion(in);
+        pos =Convertion(in);
         }
         while(pos.first==0 && pos.second == 0);
 
@@ -113,16 +113,13 @@ int main()
         /*pair<int, char> pos;
         
         pos.first= in[0]-'0';
-
         pos.second= in[1];
-
         if(!uselessLocation(pos))
         {
             if(!sameLocation(pos)) goodInput=true;
         }
         
         }while(!goodInput);
-
         //end of input validation*/
         
 
@@ -213,11 +210,18 @@ pair <int, int> Convertion (string in)
 
 void displayBoard ()
 {
+    system("cls");
+
     for(int i=0; i<14; i++)
     {
-        for (int j=0; j<29; j++)
+        for(int j=0; j<29; j++)
         {
-            
+
+            COORD pos= {(SHORT) (WIDTHSTR+ j),(SHORT) (HEIGHTSTR+i)};
+            SetConsoleCursorPosition(hconsole, pos);
+            cout << board [i][j];
         }
+        cout << endl;
     }
+
 }
