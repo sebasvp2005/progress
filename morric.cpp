@@ -4,6 +4,10 @@
 
 using namespace std;
 
+
+#define HEIGHTSTR 2
+#define WIDTHSTR 5
+
 typedef struct player
 {
     string name = "";
@@ -11,6 +15,7 @@ typedef struct player
     
 }player;
 
+COORD Convertion (string in);
 bool sameLocation(pair<int, char> pos);
 bool uselessLocation(pair <int, char> pos);
 
@@ -70,6 +75,9 @@ int main()
     {
         for(int j=0; j<29; j++)
         {
+
+            COORD pos= {(SHORT) (WIDTHSTR+ j),(SHORT) (HEIGHTSTR+i)};
+            SetConsoleCursorPosition(hconsole, pos);
             cout << board [i][j];
         }
         cout << endl;
@@ -83,6 +91,7 @@ int main()
         string in;
 
         bool goodInput= false;
+        pair<int,int> pos;
 
         do{
         cin >> in;
@@ -94,8 +103,14 @@ int main()
             cin >> in;
         }
 
+        pos =  Convertion(in);
+        }
+        while(pos.first==0 && pos.second == 0);
 
-        pair<int, char> pos;
+
+
+
+        /*pair<int, char> pos;
         
         pos.first= in[0]-'0';
 
@@ -108,7 +123,13 @@ int main()
         
         }while(!goodInput);
 
-        //end of input validation
+        //end of input validation*/
+        
+
+
+
+
+
 
 
         
@@ -131,7 +152,7 @@ int main()
     free(PLAYER[1]);
 }
 
-bool uselessLocation(pair <int, char> pos)  //check if the pos is a useless location
+bool uselessLocation(pair <int, char> pos)
 {
     for (auto e: M)
     {
@@ -146,16 +167,57 @@ bool uselessLocation(pair <int, char> pos)  //check if the pos is a useless loca
     return false;
 
 }
-bool sameLocation(pair<int, char> pos){ //check if there is one more token with the same location
+bool sameLocation(pair<int, char> pos){
 
     for(int i=0; i<2; i++)
     {
         for(int j=0; j<9; j++)
         {
-            if(PLAYER[i]->fichas[j].first && PLAYER[i]->fichas[j].second.first==pos.first && PLAYER[i]->fichas[j].second.second == pos.second) return true;
+            if(PLAYER[i]->fichas[j].second.first==pos.first && PLAYER[i]->fichas[j].second.second == pos.second) return true;
         }
     }
 
     return false;
 }
 
+
+pair <int, int> Convertion (string in)
+{
+    if(strcmp(in.c_str(), "1A")) return {3,2};
+    else if(strcmp(in.c_str(), "1D")) return {3,9};
+    else if(strcmp(in.c_str(), "1G")) return {3,15};
+    else if(strcmp(in.c_str(), "2B")) return {7,5};
+    else if(strcmp(in.c_str(), "2D")) return {7,9};
+    else if(strcmp(in.c_str(), "2F")) return {7,13};
+    else if(strcmp(in.c_str(), "3C")) return {11,7};
+    else if(strcmp(in.c_str(), "3D")) return {11,9};
+    else if(strcmp(in.c_str(), "3E")) return {11,11};
+    else if(strcmp(in.c_str(), "4A")) return {15,3};
+    else if(strcmp(in.c_str(), "4B")) return {15,5};
+    else if(strcmp(in.c_str(), "4C")) return {15,7};
+    else if(strcmp(in.c_str(), "4E")) return {15,11};
+    else if(strcmp(in.c_str(), "4F")) return {15,13};
+    else if(strcmp(in.c_str(), "4G")) return {15,15};
+    else if(strcmp(in.c_str(), "5C")) return {19,7};
+    else if(strcmp(in.c_str(), "5D")) return {19,9};
+    else if(strcmp(in.c_str(), "5E")) return {19,11};
+    else if(strcmp(in.c_str(), "2B")) return {23,5};
+    else if(strcmp(in.c_str(), "2D")) return {23,9};
+    else if(strcmp(in.c_str(), "2F")) return {23,13};
+    else if(strcmp(in.c_str(), "1A")) return {27,2};
+    else if(strcmp(in.c_str(), "1D")) return {27,9};
+    else if(strcmp(in.c_str(), "1G")) return {27,15};
+    else return {0,0};
+}
+
+
+void displayBoard ()
+{
+    for(int i=0; i<14; i++)
+    {
+        for (int j=0; j<29; j++)
+        {
+            
+        }
+    }
+}
