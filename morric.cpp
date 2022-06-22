@@ -1,4 +1,5 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <strings.h>
 #include <conio.h>
 #include <windows.h>
 
@@ -18,6 +19,7 @@ typedef struct player
 pair<int, int> Convertion (string in);
 bool sameLocation(pair<int, char> pos);
 bool uselessLocation(pair <int, char> pos);
+void displayBoard ();
 
 HANDLE hconsole =GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -67,70 +69,33 @@ int main()
     cin >> temp;
     PLAYER[1]->name=temp;
 
-    //display board
-
-
-
-    for(int i=0; i<14; i++)
-    {
-        for(int j=0; j<29; j++)
-        {
-
-            COORD pos= {(SHORT) (WIDTHSTR+ j),(SHORT) (HEIGHTSTR+i)};
-            SetConsoleCursorPosition(hconsole, pos);
-            cout << board [i][j];
-        }
-        cout << endl;
-    }
-
     //start phase 1
+
     for(int i=0; i<18; i++)
     {
-        cout << "Player " << (i%2)+1 << ": Introduzca posicion de ficha(ejem 1A): ";
-
         string in;
-
-        bool goodInput= false;
         pair<int,int> pos;
 
+        displayBoard(); 
+
         do{
-        cin >> in;
-        //check input's validity 
-        while((int)in.size()!= 2 || !isdigit(in[0]) || !isalpha(in[1]))
-        {
-            cout << "Uso correcto (ejemplo): 1A" << endl;
+
+            if(pos.first==0 && pos.second==0) cout << "Uso correcto: 1A" << endl;
+
             cout << "Player " << (i%2)+1 << ": Introduzca posicion de ficha(ejem 1A): ";
             cin >> in;
-        }
+            cin.ignore(123, '\n');
 
-        pos =Convertion(in);
+            //check input's validity 
+            pos =Convertion(in);
+            if(board [pos.second][pos.first]!='*') pos= {0,0};
+            
         }
         while(pos.first==0 && pos.second == 0);
 
+        board[pos.second][pos.first]=(i%2==0 ? 'w':'b');
 
-
-
-        /*pair<int, char> pos;
-        
-        pos.first= in[0]-'0';
-        pos.second= in[1];
-        if(!uselessLocation(pos))
-        {
-            if(!sameLocation(pos)) goodInput=true;
-        }
-        
-        }while(!goodInput);
-        //end of input validation*/
-        
-
-
-
-
-
-
-
-        
-
+    
         
 
     }
@@ -149,7 +114,7 @@ int main()
     free(PLAYER[1]);
 }
 
-bool uselessLocation(pair <int, char> pos)
+/*bool uselessLocation(pair <int, char> pos)
 {
     for (auto e: M)
     {
@@ -176,34 +141,35 @@ bool sameLocation(pair<int, char> pos){
 
     return false;
 }
+*/
 
 
 pair <int, int> Convertion (string in)
 {
-    if(strcmp(in.c_str(), "1A")) return {3,2};
-    else if(strcmp(in.c_str(), "1D")) return {3,9};
-    else if(strcmp(in.c_str(), "1G")) return {3,15};
-    else if(strcmp(in.c_str(), "2B")) return {7,5};
-    else if(strcmp(in.c_str(), "2D")) return {7,9};
-    else if(strcmp(in.c_str(), "2F")) return {7,13};
-    else if(strcmp(in.c_str(), "3C")) return {11,7};
-    else if(strcmp(in.c_str(), "3D")) return {11,9};
-    else if(strcmp(in.c_str(), "3E")) return {11,11};
-    else if(strcmp(in.c_str(), "4A")) return {15,3};
-    else if(strcmp(in.c_str(), "4B")) return {15,5};
-    else if(strcmp(in.c_str(), "4C")) return {15,7};
-    else if(strcmp(in.c_str(), "4E")) return {15,11};
-    else if(strcmp(in.c_str(), "4F")) return {15,13};
-    else if(strcmp(in.c_str(), "4G")) return {15,15};
-    else if(strcmp(in.c_str(), "5C")) return {19,7};
-    else if(strcmp(in.c_str(), "5D")) return {19,9};
-    else if(strcmp(in.c_str(), "5E")) return {19,11};
-    else if(strcmp(in.c_str(), "2B")) return {23,5};
-    else if(strcmp(in.c_str(), "2D")) return {23,9};
-    else if(strcmp(in.c_str(), "2F")) return {23,13};
-    else if(strcmp(in.c_str(), "1A")) return {27,2};
-    else if(strcmp(in.c_str(), "1D")) return {27,9};
-    else if(strcmp(in.c_str(), "1G")) return {27,15};
+    if(strcmp(in.c_str(), "1A")==0) return {3,1};
+    else if(strcmp(in.c_str(), "1D")==0) return {3,7};
+    else if(strcmp(in.c_str(), "1G")==0) return {3,13};
+    else if(strcmp(in.c_str(), "2B")==0) return {7,3};
+    else if(strcmp(in.c_str(), "2D")==0) return {7,7};
+    else if(strcmp(in.c_str(), "2F")==0) return {7,11};
+    else if(strcmp(in.c_str(), "3C")==0) return {11,5};
+    else if(strcmp(in.c_str(), "3D")==0) return {11,7};
+    else if(strcmp(in.c_str(), "3E")==0) return {11,9};
+    else if(strcmp(in.c_str(), "4A")==0) return {15,1};
+    else if(strcmp(in.c_str(), "4B")==0) return {15,3};
+    else if(strcmp(in.c_str(), "4C")==0) return {15,5};
+    else if(strcmp(in.c_str(), "4E")==0) return {15,9};
+    else if(strcmp(in.c_str(), "4F")==0) return {15,11};
+    else if(strcmp(in.c_str(), "4G")==0) return {15,13};
+    else if(strcmp(in.c_str(), "5C")==0) return {19,5};
+    else if(strcmp(in.c_str(), "5D")==0) return {19,7};
+    else if(strcmp(in.c_str(), "5E")==0) return {19,9};
+    else if(strcmp(in.c_str(), "6B")==0) return {23,3};
+    else if(strcmp(in.c_str(), "6D")==0) return {23,7};
+    else if(strcmp(in.c_str(), "6F")==0) return {23,12};
+    else if(strcmp(in.c_str(), "7A")==0) return {27,1};
+    else if(strcmp(in.c_str(), "7D")==0) return {27,7};
+    else if(strcmp(in.c_str(), "7G")==0) return {27,13};
     else return {0,0};
 }
 
@@ -221,7 +187,9 @@ void displayBoard ()
             SetConsoleCursorPosition(hconsole, pos);
             cout << board [i][j];
         }
-        cout << endl;
+        cout << endl << endl;
     }
 
 }
+
+
