@@ -12,13 +12,11 @@ typedef struct player
 {
     string name = "";
     int tokenNum =9;
-    pair <bool, pair <int, char>>fichas[9];
     
 }player;
 
 
 pair<int, int> Convertion (string in);
-bool sameLocation(pair<int, char> pos);
 bool validLocation(pair <int, char> pos);
 void displayBoard ();
 bool foundNearPos (string in1, string in2);
@@ -33,7 +31,7 @@ map <int, vector<char>> validPos={{1, {'A', 'D', 'G'}},
                             {4, {'A','B', 'C', 'E', 'F', 'G'}},
                             {5, {'C', 'D', 'E'}},
                             {6, {'B', 'D', 'F'}},
-                            {7, {'A', 'D', 'G', }}};
+                            {7, {'A', 'D', 'G'}}};
 
 
 
@@ -61,8 +59,8 @@ player *PLAYER[2];
 int main()
 {
     //inicitialize variables and get data from players
-    PLAYER[0]= (player*) calloc(1, sizeof(player));
-    PLAYER[1]= (player*) calloc(1, sizeof(player));
+    PLAYER[0]= (player*) malloc( sizeof(player));
+    PLAYER[1]= (player*) malloc( sizeof(player));
 
     string temp;
 
@@ -82,6 +80,8 @@ int main()
     cout << "Ingrese nombre de jugador 2 (negras): \n";
     cin >> temp;
     PLAYER[1]->name=temp;
+    free(PLAYER[0]);
+    free(PLAYER[1]);
 
     //start phase 1
 
@@ -162,7 +162,10 @@ int main()
         if(board[pos2.second][pos2.first]!='*') pos2={0,0};
         }while(pos2.first==0 && pos2.second == 0);
 
-        }while(back || foundNearPos(in1, in2));
+        }while(back || !foundNearPos(in1, in2));
+
+        board[pos1.second][pos1.first]='*';
+        board[pos2.second][pos2.first]=(i%2==0 ? 'w': 'b');
 
         
 
@@ -176,10 +179,20 @@ int main()
 
 
 
+
+
+
+
+
+
+
+
+
     
 
-
-
+    cout << "El ganador es ";
+    cout << (i%2==0? "blancas" : "negras") <<endl;
+    cout << "Felicidades " << (i%2==0? PLAYER[0]->name : PLAYER[1]->name);
     getch();
     free(PLAYER[0]);
     free(PLAYER[1]);
@@ -200,20 +213,6 @@ bool validLocation(pair <int, char> pos)
     return false;
 
 }
-/*
-bool sameLocation(pair<int, char> pos){
-
-    for(int i=0; i<2; i++)
-    {
-        for(int j=0; j<9; j++)
-        {
-            if(PLAYER[i]->fichas[j].second.first==pos.first && PLAYER[i]->fichas[j].second.second == pos.second) return true;
-        }
-    }
-
-    return false;
-}
-*/
 
 
 pair <int, int> Convertion (string in)
@@ -313,6 +312,7 @@ bool foundNearPos (string in1, string in2)
 
     return false;
 }
+
 
 
 
