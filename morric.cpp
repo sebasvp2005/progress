@@ -170,7 +170,6 @@ int main()
 
 
             displayBoard();
-            cout << PLAYER[0]->tokenNum << PLAYER[1]->tokenNum;
 
 
 
@@ -276,13 +275,11 @@ int main()
 
 
             displayBoard();
-            cout << PLAYER[0]->tokenNum << PLAYER[1]->tokenNum;
-            getch();
-            
 
+        
         }
 
-        if(PLAYER[0]->tokenNum <3 || PLAYER[0]->tokenNum<3) break;
+        if(PLAYER[0]->tokenNum <3 || PLAYER[1]->tokenNum<3) break;
 
         
         i++;
@@ -542,11 +539,6 @@ bool Row (pair <int, char> in, int turno) //1A
 
 
 }
-
-
-
-
-
 
 
 
