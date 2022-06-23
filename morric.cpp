@@ -1,5 +1,11 @@
-#include <bits/stdc++.h>
+#include <vector>
+#include <algorithm>
+#include <map>
+#include <utility>
 #include <conio.h>
+#include <string.h>
+#include <strings.h>
+#include <iostream>
 #include <windows.h>
 
 using namespace std;
@@ -10,8 +16,8 @@ using namespace std;
 
 typedef struct player
 {
-    string name = "";
-    int tokenNum =9;
+    string name;
+    int tokenNum;
     
 }player;
 
@@ -20,6 +26,7 @@ pair<int, int> Convertion (string in);
 bool validLocation(pair <int, char> pos);
 void displayBoard ();
 bool foundNearPos (string in1, string in2);
+bool Row (pair <int, char> in, int turno);
 
 HANDLE hconsole =GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -31,7 +38,18 @@ map <int, vector<char>> validPos={{1, {'A', 'D', 'G'}},
                             {4, {'A','B', 'C', 'E', 'F', 'G'}},
                             {5, {'C', 'D', 'E'}},
                             {6, {'B', 'D', 'F'}},
-                            {7, {'A', 'D', 'G'}}};
+                            {7, {'A', 'D', 'G'}}
+};
+
+vector< pair<int, char> > diagonal[8]={{{1,'A'}, {2,'B'}, {3,'C'}},
+                                    {{5,'E'}, {6,'F'}, {7,'G'}},
+                                    {{1,'G'}, {2,'F'}, {3,'E'}},
+                                    {{5,'C'}, {6,'B'}, {7,'A'}},
+                                    {{2,'D'}, {3,'C'}, {4,'B'}},
+                                    {{4,'F'}, {5,'E'}, {6,'D'}},
+                                    {{4,'B'}, {5,'C'}, {6,'D'}},
+                                    {{2,'D'}, {3,'E'}, {4,'F'}}
+};
 
 
 
@@ -50,7 +68,7 @@ char board [][29]= {{"   1   2   3   4   5   6   7"},
                     {"F  |   * - - - * - - - *   |"},
                     {"   |           |           |"},
                     {"G  *-----------*-----------*"}
-    };
+};
 
 
 player *PLAYER[2];
@@ -61,8 +79,10 @@ int main()
     //inicitialize variables and get data from players
     PLAYER[0]= (player*) malloc( sizeof(player));
     PLAYER[1]= (player*) malloc( sizeof(player));
+    PLAYER[0]->tokenNum=PLAYER[1]->tokenNum=9;
 
-    string temp;
+
+    string abc;
 
     cout<< "     __  ___                _                                   " << endl;   
     cout<< "    /  |/  /___  __________(_)____   ____ _____ _____ ___  ___  " << endl;  
@@ -72,25 +92,22 @@ int main()
     cout<< "                                  /____/                        " << endl << endl; 
 
     cout << "Ingrese nombre de jugador 1 (blancas): \n";
-    cin >> temp;
-    PLAYER[0]->name=temp;
+    cin >> abc;
+    PLAYER[0]->name=abc;
 
-    cin.ignore(40, '\n');
 
     cout << "Ingrese nombre de jugador 2 (negras): \n";
-    cin >> temp;
-    PLAYER[1]->name=temp;
-    free(PLAYER[0]);
-    free(PLAYER[1]);
+    cin >> abc;
+    PLAYER[1]->name=abc;
 
     //start phase 1
+    displayBoard();
 
     for(int i=0; i<18; i++)
     {
         string in;
         pair<int,int> pos={1,1}; //random start value
 
-        displayBoard(); 
         cout << "Fase de colocar fichas" <<endl;
 
         do{
@@ -110,6 +127,55 @@ int main()
 
         board[pos.second][pos.first]=(i%2==0 ? 'w':'b');
 
+        displayBoard();
+
+        //check Row
+        if(Row(pair<int,char> (in[0]-'0', in[1]), i))
+        {
+            pair<int,int> rempos={1,1};
+
+            do{
+
+            do{
+            if(rempos.first==0 && rempos.second == 0) cout << "Posicion invalida" << endl;
+            string temp;
+            cout << "Player " << (i%2)+1 << ": Introduza posicion de ficha a remover: ";
+            cin >> temp;
+            cin.ignore(123, '\n');
+
+            rempos=Convertion(temp);
+
+
+            }while(rempos.first==0 && rempos.second == 0);
+
+            if(i%2==0)
+            {
+                if(board[rempos.second][rempos.first]=='b')
+                {
+                    board[rempos.second][rempos.first]='*';
+                    PLAYER[(i+1)%2]->tokenNum=PLAYER[(i+1)%2]->tokenNum-1;
+                }
+                else{rempos={0,0};}
+            }
+            else{
+                if(board[rempos.second][rempos.first]=='w')
+                {
+                    board[rempos.second][rempos.first]='*';
+                    PLAYER[(i+1)%2]->tokenNum=PLAYER[(i+1)%2]->tokenNum-1;
+                }
+                else{rempos={0,0};}
+            }
+
+            }while(rempos.first==0 && rempos.second == 0);
+
+
+            displayBoard();
+            cout << PLAYER[0]->tokenNum << PLAYER[1]->tokenNum;
+
+
+
+        }
+
     
         
 
@@ -118,7 +184,7 @@ int main()
     //phase 2
     int i=0;
 
-    while(PLAYER[0]->tokenNum <3 || PLAYER[1]->tokenNum <3 )
+    while(1)
     {
 
         pair<int, int> pos1 ={1,1}; //random star value
@@ -167,28 +233,61 @@ int main()
         board[pos1.second][pos1.first]='*';
         board[pos2.second][pos2.first]=(i%2==0 ? 'w': 'b');
 
+        displayBoard();
+
+        //check Row
+        if(Row(pair<int,char> (in2[0]-'0', in2[1]), i))
+        {
+            pair<int,int> rempos={1,1};
+
+            do{
+
+            do{
+            if(rempos.first==0 && rempos.second == 0) cout << "Posicion invalida" << endl;
+            string temp;
+            cout << "Player " << (i%2)+1 << ": Introduza posicion de ficha a remover: ";
+            cin >> temp;
+            cin.ignore(123, '\n');
+
+            rempos=Convertion(temp);
+
+
+            }while(rempos.first==0 && rempos.second == 0);
+
+            if(i%2==0)
+            {
+                if(board[rempos.second][rempos.first]=='b')
+                {
+                    board[rempos.second][rempos.first]='*';
+                    PLAYER[(i+1)%2]->tokenNum=PLAYER[(i+1)%2]->tokenNum-1;
+                }
+                else{rempos={0,0};}
+            }
+            else{
+                if(board[rempos.second][rempos.first]=='w')
+                {
+                    board[rempos.second][rempos.first]='*';
+                    PLAYER[(i+1)%2]->tokenNum=PLAYER[(i+1)%2]->tokenNum-1;
+                }
+                else{rempos={0,0};}
+            }
+
+            }while(rempos.first==0 && rempos.second == 0);
+
+
+            displayBoard();
+            cout << PLAYER[0]->tokenNum << PLAYER[1]->tokenNum;
+            getch();
+            
+
+        }
+
+        if(PLAYER[0]->tokenNum <3 || PLAYER[0]->tokenNum<3) break;
+
         
-
-
-
         i++;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
 
     cout << "El ganador es ";
     cout << (i%2==0? "blancas" : "negras") <<endl;
@@ -281,7 +380,7 @@ bool foundNearPos (string in1, string in2)
         pair <int, char> temp= {in1[0]-'0', in1[1]+i};
         if(validLocation(temp))
         {
-            if(temp== (pair<int, char>){in2[0]-'0', in2[1]}) return true;
+            if(temp==(pair<int, char>){in2[0]-'0', in2[1]}) return true;
 
             break;
         }
@@ -311,6 +410,137 @@ bool foundNearPos (string in1, string in2)
 
 
     return false;
+}
+
+bool Row (pair <int, char> in, int turno) //1A
+{
+    //vertical
+
+    int tres=1;
+
+    int i;
+
+    if(in.first==4)
+    {
+        if(in.second<'D') i=0;
+        else{if(in.second>'D') i=4;}} 
+    
+    else{i=0;}
+
+    for(; i < (int)validPos[in.first].size(); i++)
+    {
+        if(in.first==4 && i==3)
+        {break;}
+        string temp="";
+        temp+=(char) (in.first+'0');
+        temp += (char)validPos[in.first][i];
+        temp+= '\0';
+
+        pair<int, int> p=Convertion(temp);
+
+        if(turno%2==0)
+        {
+           if(board[p.second][p.first]!='w')
+           {
+            tres = tres*0;
+            break;} 
+        } 
+        else{if(board[p.second][p.first]!='b')
+        {
+            tres = tres*0;
+            break;
+        } }
+
+
+    }
+
+    if(tres) 
+    {return true;}
+
+    tres=1;
+
+    //horizontal
+
+    if(in.second=='D')
+    {
+        if(in.first<4) i=1;
+        else{i=5;}
+    }
+    else {i=1;}
+
+    
+
+    for(; i<8; i++)
+    {
+        if(in.second=='D' && i==4) break;
+
+        if(count(validPos[i].begin(), validPos[i].end(), in.second))
+        {
+        string temp="";
+        temp+=(char) (i+'0');
+        temp += (char)in.second;
+        temp+= '\0';
+
+        pair<int, int> p=Convertion(temp);
+
+        if(turno%2==0)
+        {
+           if(board[p.second][p.first]!='w')
+           {
+            tres = tres*0;
+            break;} 
+        } 
+        else{if(board[p.second][p.first]!='b')
+        {
+            tres = tres*0;
+            break;
+        } }
+
+        }
+    }
+
+    if(tres) 
+    {return true;}
+
+    //diagonal
+
+    for(int i=0; i<8; i++)
+    {
+        if(count(diagonal[i].begin(), diagonal[i].end(), in))
+        {
+            tres=1;
+            for (int j=0; j<3; j++)
+            {
+                string temp="";
+                temp+=(char)diagonal[i][j].first+'0';
+                temp+=(char)diagonal[i][j].second;
+                temp+='\0';
+                pair<int,int> p=Convertion(temp);
+
+                if(turno%2==0)
+                {
+                    if(board[p.second][p.first]!='w')
+                    {
+                    tres = tres*0;
+                    break;} 
+                } 
+                else{if(board[p.second][p.first]!='b')
+                    {
+                    tres = tres*0;
+                    break;
+                    } }
+            }
+        }
+
+        if(tres) 
+        {return true;}
+    }
+
+
+    return false;
+
+
+
 }
 
 
