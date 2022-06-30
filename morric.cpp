@@ -54,17 +54,17 @@ vector< pair<int, char> > diagonal[8] = { {{1,'A'}, {2,'B'}, {3,'C'}},
 
 
 char board[][29] = { {"   1   2   3   4   5   6   7"},
-                    {"A  * - - - - - * - - - - - *"},
+                    {"A  *-----------*-----------*"},
                     {"   |           |           |"},
-                    {"B  |   * - - - * - - - *   |"},
+                    {"B  |   *-------*-------*   |"},
                     {"   |   |       |       |   |"},
-                    {"C  |   |   * - * - *   |   |"},
+                    {"C  |   |   *---*---*   |   |"},
                     {"   |   |   |       |   |   |"},
-                    {"D  * - * - *       * - * - *"},
+                    {"D  *---*---*       *---*---*"},
                     {"   |   |   |       |   |   |"},
-                    {"E  |   |   * - * - *   |   |"},
+                    {"E  |   |   *---*---*   |   |"},
                     {"   |   |       |       |   |"},
-                    {"F  |   * - - - * - - - *   |"},
+                    {"F  |   *-------*-------*   |"},
                     {"   |           |           |"},
                     {"G  *-----------*-----------*"}
 };
@@ -92,13 +92,21 @@ int main()
     cout << "\t| $$  $$$| $$| $$  \\ $$| $$  \\__/| $$  \\__/| $$|  $$$$$$       | $$  \\ $$  /$$$$$$$| $$ \\ $$ \\ $$| $$$$$$$$" << endl;
     cout << "\t| $$\\  $ | $$| $$  | $$| $$      | $$      | $$ \\____  $$      | $$  | $$ /$$__  $$| $$ | $$ | $$| $$_____/" << endl;
     cout << "\t| $$ \\/  | $$|  $$$$$$/| $$      | $$      | $$ /$$$$$$$/      |  $$$$$$$|  $$$$$$$| $$ | $$ | $$|  $$$$$$$" << endl;
-    cout << "\t|__/     |__/ \\______/ |__/      |__/      |__/|_______/        \____  $$ \\_______/|__/ |__/ |__/ \\_______/" << endl;
+    cout << "\t|__/     |__/ \\______/ |__/      |__/      |__/|_______/        \\____  $$ \\_______/|__/ |__/ |__/ \\_______/" << endl;
     cout << "\t                                                                /$$  \\ $$                                  " << endl;
     cout << "\t                                                               |  $$$$$$/                                  " << endl;
     cout << "\t                                                                \\______/                                   " << endl;
 
-    SetConsoleCursorPosition(hconsole, COORD{ 45, 20 });
 
+    SetConsoleTextAttribute(hconsole, 13);
+
+    cout << "\n\n\t\t\t\tHecho por: \n\n";
+    
+    cout << "\t\t\t\tValdivia Peceros Jorge Sebastian (202212452)\n\n";
+    cout << "\t\t\t\tVelarde Leyva Joaquín Eduardo (202212510)\n\n";
+    cout << "\t\t\t\tAndia Matos Adrian Guillermo(202214761)\n\n\n\n";
+
+    SetConsoleCursorPosition(hconsole, COORD{ 45, 25 });
     SetConsoleTextAttribute(hconsole, 14);
     cout << "Press any key to continue...";
 
@@ -111,26 +119,31 @@ int main()
     cout << "\tLa entrada de posiciones se debe hacer mediante un numero (ejemplo: '1') y una letra mayuscula (ejemplo: 'A')." << endl<<endl;
     cout << "\tNo se admitiran posiciones fuera de juego" << endl<<endl;
     cout << "\tDespues de colocar ambos jugadores sus 9 fichas, se inicia la fase 2 que consiste en mover la fichas" << endl <<  endl;
-    cout << "\tLos jugadores deben buscar hacer tres en raya para elminar una pieza enemiga" << endl<<endl;
-    cout << "\tNo puedes elminar una ficha que de encuentra en un tres en raya" << endl << endl;
+    cout << "\tLos jugadores deben buscar hacer tres en raya para eliminar una pieza enemiga" << endl<<endl;
+    cout << "\tNo puedes elminar una ficha que de encuentra en un tres en raya, a menos que todas las fichas enemigas sean 3 en raya" << endl << endl;
+    cout << "\tCuando un jugador tenga 3 fichas desbloqueara el 'vuelo', que le permite ir a cualqueir casilla" << endl << endl;
     cout << "\tGana el que logra reducir las fichas del contrincante a 2" << endl <<endl << endl;
-    SetConsoleTextAttribute(hconsole, 12);
     cout << "Press any key to continue..";
-    Sleep(2000);
+    Sleep(1000);
     _getch();
 
+    SetConsoleTextAttribute(hconsole, 12);
 
     system("cls");
 
-    cout << "Ingrese nombre de jugador 1 (blancas): \n";
+    cout << endl << endl << "JUGADORES: " << endl << endl;
+    cout << "\t-------------------------------------------------" << endl;
+    cout << "\t  Ingrese nombre de jugador 1 (blancas): ";
     cin >> abc;
     PLAYER[0].name = abc;
 
-
-    cout << "Ingrese nombre de jugador 2 (negras): \n";
+    cout << "\t-------------------------------------------------" << endl << endl;
+    cout << "\t-------------------------------------------------" << endl;
+    cout << "\t  Ingrese nombre de jugador 2 (negras): ";
     cin >> abc;
     PLAYER[1].name = abc;
 
+    cout << "\t-------------------------------------------------" << endl;
     //start phase 1
     displayBoard();
 
@@ -162,6 +175,30 @@ int main()
         //check Row
         if (Row(pair<int, char>(in[0] - '0', in[1]), i))
         {
+            bool allthree = true;
+
+            for (int k = 0; k < 14; k++)
+            {
+                for (int l = 0; l < 29; l++)
+                {
+                    if (i % 2 == 0)
+                    {
+                        if (board[k][l] == 'b')
+                        {
+                            if (!Row(pair<int, char>{(l - 3) / 4 + 1, ((k - 1) / 2) + 'A'}, i + 1)) allthree = false;
+                        }
+                    }
+                    else
+                    {
+                        if (board[k][l] == 'w')
+                        {
+                            if (!Row(pair<int, char>{(l - 3) / 4 + 1, ((k - 1) / 2) + 'A'}, i + 1)) allthree = false;
+                        }
+                    }
+                }
+            }
+
+
             pair<int, int> rempos = { 1,1 }; //remove position
 
             do {
@@ -180,7 +217,7 @@ int main()
 
                 if (i % 2 == 0)
                 {
-                    if (board[rempos.second][rempos.first] == 'b' && !Row(pair<int, char> {temp[0]-'0', temp[1] }, i + 1))
+                    if (board[rempos.second][rempos.first] == 'b' && (!Row(pair<int, char> {temp[0] - '0', temp[1] }, i + 1) || allthree))
                     {
                         board[rempos.second][rempos.first] = '*';
                         PLAYER[(i + 1) % 2].tokenNum = PLAYER[(i + 1) % 2].tokenNum - 1;
@@ -188,7 +225,7 @@ int main()
                     else { rempos = { 0,0 }; }
                 }
                 else {
-                    if (board[rempos.second][rempos.first] == 'w' && !Row(pair<int, char> {temp[0] - '0', temp[1] }, i + 1))
+                    if (board[rempos.second][rempos.first] == 'w' && (!Row(pair<int, char> {temp[0] - '0', temp[1] }, i + 1) || allthree))
                     {
                         board[rempos.second][rempos.first] = '*';
                         PLAYER[(i + 1) % 2].tokenNum = PLAYER[(i + 1) % 2].tokenNum - 1;
@@ -275,6 +312,31 @@ int main()
         //check Row
         if (Row(pair<int, char>(in2[0] - '0', in2[1]), i))
         {
+            bool allthree = true;
+
+            for (int k = 0; k < 14; k++)
+            {
+                for (int l = 0; l < 29; l++)
+                {
+                    if (i % 2 == 0)
+                    {
+                        if (board[k][l] == 'b')
+                        {
+                            if (!Row(pair<int, char>{(l - 3) / 4 + 1, ((k - 1) / 2) + 'A'}, i + 1)) allthree = false;
+                        }
+                    }
+                    else
+                    {
+                        if (board[k][l] == 'w')
+                        {
+                            if (!Row(pair<int, char>{(l - 3) / 4 + 1, ((k - 1) / 2) + 'A'}, i + 1)) allthree = false;
+                        }
+                    }
+                }
+            }
+
+
+
             pair<int, int> rempos = { 1,1 };
 
             do {
@@ -293,7 +355,7 @@ int main()
 
                 if (i % 2 == 0)
                 {
-                    if (board[rempos.second][rempos.first] == 'b' && !Row(pair<int, char> {temp[0] - '0', temp[1] }, i + 1))
+                    if (board[rempos.second][rempos.first] == 'b' && (!Row(pair<int, char> {temp[0] - '0', temp[1] }, i + 1) || allthree))
                     {
                         board[rempos.second][rempos.first] = '*';
                         PLAYER[(i + 1) % 2].tokenNum = PLAYER[(i + 1) % 2].tokenNum - 1;
@@ -301,7 +363,7 @@ int main()
                     else { rempos = { 0,0 }; }
                 }
                 else {
-                    if (board[rempos.second][rempos.first] == 'w' && !Row(pair<int, char> {temp[0] - '0', temp[1] }, i + 1))
+                    if (board[rempos.second][rempos.first] == 'w' && (!Row(pair<int, char> {temp[0] - '0', temp[1] }, i + 1) || allthree))
                     {
                         board[rempos.second][rempos.first] = '*';
                         PLAYER[(i + 1) % 2].tokenNum = PLAYER[(i + 1) % 2].tokenNum - 1;
@@ -323,10 +385,81 @@ int main()
         i++;
     }
 
+    //show the winner
+
+    cout << "Fin del juego";
+
+    _getch();
+    system("cls");
+
+    SetConsoleTextAttribute(hconsole, 0x0E);
+    cout << " __        ___                       " << endl;
+    cout << " \\ \\      / (_)_ __  _ __   ___ _ __ " << endl;
+    cout << "  \\ \\ /\\ / /| | '_ \\| '_ \\ / _ \\ '__|" << endl;
+    cout << "   \\ V  V / | | | | | | | |  __/ |   " << endl;
+    cout << "    \\_/\\_/  |_|_| |_|_| |_|\\___|_|   " << endl <<endl;
+
+    char medal[][23] = { {"     _______________ "},
+    {"    |@@@@|     |####|"},
+    {"    |@@@@|     |####|"},
+    {"    |@@@@|     |####|"},
+    {"    \\@@@@|     |####/"},
+    {"     \\@@@|     |###/ "},
+    {"      `@@|_____|##/  "},
+    {"           (O)       "},
+    {"        .-'''''-.    "},
+    {"      .'  * * *  '.  "},
+    {"     :  *       *  : "},
+    {"    : ~           ~ :"},
+    {"    : ~           ~ :"},
+    {"     :  *       *  : "},
+    {"      `.  * * *  .'  "},
+    {"        `-.....-'    "} };
 
     cout << "El ganador es ";
     cout << (i % 2 == 0 ? "blancas" : "negras") << endl;
     cout << "Felicidades " << (i % 2 == 0 ? PLAYER[0].name : PLAYER[1].name);
+
+    for (int i = 0; i < 16; i++)
+    {
+        for (int j = 0; j < 23; j++)
+        {
+            SetConsoleCursorPosition(hconsole, COORD{ (SHORT)(5 + j), (SHORT)(8 + i) });
+            if (medal[i][j] == '\'' || medal[i][j] == '-' || medal[i][j] == ':' || medal[i][j] == '.') SetConsoleTextAttribute(hconsole, 0x0E);
+            else SetConsoleTextAttribute(hconsole, 0x0C);
+
+            cout << medal[i][j];
+        }
+    }
+    SetConsoleCursorPosition(hconsole, COORD{ 15,19 });
+    cout << (i % 2 == 0 ? PLAYER[0].name : PLAYER[1].name);
+
+
+
+   _getch();
+
+
+   system("cls");
+   SetConsoleTextAttribute(hconsole, 0x0D);
+
+   cout << "\n\n\tCREDITOS:\n\n\n";
+
+
+   cout << "\t\tValdivia Peceros Jorge Sebastian (202212452)\n\n";
+   cout << "\t\tVelarde Leyva Joaquín Eduardo (202212510)\n\n";
+   cout << "\t\tAndia Matos Adrian Guillermo(202214761)\n\n\n\n";
+
+
+   cout << "\t\t  /$$$$$$                               /$$                    " << endl;
+   cout << "\t\t /$$__  $$                             |__/                    " << endl;
+   cout << "\t\t| $$  \\__/  /$$$$$$  /$$$$$$   /$$$$$$$ /$$  /$$$$$$   /$$$$$$$" << endl;
+   cout << "\t\t| $$ /$$$$ /$$__  $$|____  $$ /$$_____/| $$ |____  $$ /$$_____/" << endl;
+   cout << "\t\t| $$|_  $$| $$  \\__/ /$$$$$$$| $$      | $$  /$$$$$$$|  $$$$$$ " << endl;
+   cout << "\t\t| $$  \\ $$| $$      /$$__  $$| $$      | $$ /$$__  $$ \\____  $$" << endl;
+   cout << "\t\t|  $$$$$$/| $$     |  $$$$$$$|  $$$$$$$| $$|  $$$$$$$ /$$$$$$$/" << endl;
+   cout << "\t\t \\______/ |__/      \\_______/ \\_______/|__/ \\_______/|_______/ " << endl;
+
+
    _getch();
 
 }
@@ -382,6 +515,8 @@ void displayBoard()
 {
     system("cls");
 
+    SetConsoleTextAttribute(hconsole, 0xB0);
+
     for (int i = 0; i < 14; i++)
     {
         for (int j = 0; j < 29; j++)
@@ -389,11 +524,20 @@ void displayBoard()
 
             COORD pos = { (SHORT)(WIDTHSTR + j),(SHORT)(HEIGHTSTR + i) };
             SetConsoleCursorPosition(hconsole, pos);
+            if (i != 0 && j > 1)
+            {
+                if(board[i][j]=='w') SetConsoleTextAttribute(hconsole, 0xFF);
+                else if(board[i][j] == 'b') SetConsoleTextAttribute(hconsole, 0x00);
+                else SetConsoleTextAttribute(hconsole, 0x60);
+            }
+            else SetConsoleTextAttribute(hconsole, 0x0F);
+
             cout << board[i][j];
         }
-        cout << endl << endl;
     }
 
+    SetConsoleTextAttribute(hconsole, 0x0F);
+    cout << endl << endl;
 }
 
 bool foundNearPos(string in1, string in2)
